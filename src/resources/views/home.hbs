@@ -4,19 +4,17 @@
 
         {{#each courses}}
 
-            <div class="col">
-                <div class="card">
-                    <a href="courses/{{this.slug}}"><img
-                            class="card-img-top"
-                            src="https://img.youtube.com/vi/{{this.idVideo}}/sddefault.jpg"
-                            alt="Card image cap"
-                        /></a>
-                    <div class="card-body">
-                        <a href="courses/{{this.slug}}"><h5
-                                class="card-title"
-                            >{{this.name}}</h5></a>
-                        <a href="#" class="btn btn-primary">Watch Video</a>
-                    </div>
+            <div class="card" style="width: 18rem;">
+                <a href="courses/{{this.slug}}"><img
+                        class="card-img-top"
+                        src="https://img.youtube.com/vi/{{this.idVideo}}/sddefault.jpg"
+                        alt="Card image cap"
+                    /></a>
+                <div class="card-body">
+                    <a href="courses/{{this.slug}}"><h5
+                            class="card-title"
+                        >{{this.name}}</h5></a>
+                    <a href="#" class="btn btn-primary">Watch Video</a>
                 </div>
             </div>
 

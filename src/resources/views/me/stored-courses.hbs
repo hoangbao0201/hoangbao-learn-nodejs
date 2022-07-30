@@ -1,13 +1,41 @@
-<div class="mt-4">
+<form class="mt-4" name="container-form" method="POST" action="/courses/handle-form-actions">
     <div>
         <h2>My courses</h2>
-        <a href="/me/trash/courses">Thùng rác</a>
+        {{#if countDeleted}}
+            <a class="btn btn-danger" href="/me/trash/courses">
+                {{countDeleted}}
+                <i class="fa-solid fa-trash"></i>
+            </a>
+        {{/if}}
+
+         <div class="d-flex align-items-center mt-4">
+             <div class="form-check mr-3">
+                <input type="checkbox" class="form-check-input" id="checkbox-all">
+                <label class="form-check-label" for="checkbox-all">Check All</label>
+            </div>
+    
+            <select class="form-control form-control-sm col-md-4 mr-3 checkbox-select--options" name="action" id="" required>
+                <option value="">Choose...</option>
+                <option value="delete">Delete</option>
+                <option value="2">Two</option>
+                <option value="3">Three</option>
+            </select>
+    
+            <button class="btn btn-primary btn-sm check-all-submit-btn" disabled>Submit</button>
+         </div>
+        
     </div>
     <table class="table mt-4">
         <thead>
             <tr>
-                <th scope="col">#</th>
-                <th scope="col">Name</th>
+                <th scope="col">Option</th>
+                <th scope="col">
+                    #
+                    {{{sortable "_id" _sort}}}
+                </th>
+                <th scope="col">Name 
+                    {{{sortable "name" _sort}}}
+                </th>
                 <th scope="col">Description</th>
                 <th scope="col">IDVideo</th>
                 <th scope="col">Customize</th>
@@ -15,9 +43,14 @@
         </thead>
 
 
-        <tbody>
+        <tbody> 
             {{#each courses}}
                 <tr>
+                    <td>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="idCourses[]" value="{{this._id}}">
+                        </div>
+                    </td>
                     <th scope="row">{{this._id}}</th>
                     <td>{{this.name}}</td>
                     <td>{{this.description}}</td>
@@ -43,7 +76,7 @@
         </tbody>
     </table>
 
-</div>
+</form>
 
 <!-- Modal -->
 <div
@@ -91,8 +124,12 @@
     document.addEventListener("DOMContentLoaded", () => {
         var idCourse;
         var btnDelCourse = document.getElementById("btn-delete-course");
-        var formDelCourse = document.forms["form-del-course"]
+        var formDelCourse = document.forms["form-del-course"];
+        var containerForm = $("form[name='container-form']");
 
+        var checkboxAll = $('#checkbox-all');
+        var courseItemCheckbox = $('input[name="idCourses[]"]')
+        var checkAllSubmitBtn = $(".check-all-submit-btn");
 
         $('#exampleModal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget);
@@ -102,6 +139,29 @@
         btnDelCourse.onclick = () => {
             formDelCourse.action = "/courses/" + idCourse + "?__method=DELETE";
             formDelCourse.submit();
+        }
+
+        // checkbox all change
+        checkboxAll.change(function (e) {
+            var isCheckedAll = $(this).prop("checked");
+            courseItemCheckbox.prop("checked", isCheckedAll);
+            renderCheckAllSubmitBtn();
+        })
+
+        // Courses item checkbox change
+        courseItemCheckbox.change(function () {
+            var isCheckedAll = courseItemCheckbox.length === $('input[name="idCourses[]"]:checked').length
+            checkboxAll.prop("checked", isCheckedAll);
+            renderCheckAllSubmitBtn();
+        })
+
+        function renderCheckAllSubmitBtn() {
+            var checkedCount = $('input[name="idCourses[]"]:checked').length;
+            if(checkedCount>0) {
+                checkAllSubmitBtn.attr("disabled", false);
+           } else {
+                checkAllSubmitBtn.attr("disabled", true);
+           }
         }
 
     })
